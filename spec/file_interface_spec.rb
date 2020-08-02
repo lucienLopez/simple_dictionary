@@ -31,7 +31,7 @@ RSpec.describe FileInterface do
         FileInterface.write_words(path, %w(lorem ipsum dolor sit amet hôpital))
         expect(File.read(path)).to eq('lorem ipsum dolor sit amet hôpital')
       ensure
-        File.delete(path) if File.exists?(path)
+        File.delete(path) if File.exist?(path)
       end
     end
   end
