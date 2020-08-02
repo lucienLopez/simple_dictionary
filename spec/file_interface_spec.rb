@@ -1,5 +1,5 @@
 require 'spec_helper'
-require './file_interface.rb'
+require './app/file_interface.rb'
 
 RSpec.describe FileInterface do
   describe '.load_words' do
