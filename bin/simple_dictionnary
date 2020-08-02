@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require_relative '../app/cli.rb'
+
+if ARGV.empty?
+  puts 'please enter a file path as first parameter'
+  exit 1
+else
+  begin
+    CLI.new(ARGV[0]).landing
+  rescue Errno::ENOENT
+    puts "No file found at #{ARGV[0]}"
+    exit 1
+  end
+end
