@@ -73,8 +73,8 @@ RSpec.describe CLI do
     let(:path) { "#{RSPEC_ROOT}/documents/dictionary_sample.txt" }
     let(:cli) { CLI.new(path) }
 
-    context 'when passing a word in current list' do
-      it 'removes it from list, writes to file' do
+    context 'when passing a word in current dictionary' do
+      it 'removes it from dictionary, writes to file' do
         expect(cli).to receive(:landing)
         allow(Readline).to receive(:readline).and_return('dolor').once
 
@@ -90,8 +90,8 @@ RSpec.describe CLI do
       end
     end
 
-    context 'when passing a word not in current list' do
-      it 'does not update list, nor touch file' do
+    context 'when passing a word not in current dictionary' do
+      it 'does not update dictionary, nor touch file' do
         expect(cli).to receive(:landing)
         allow(Readline).to receive(:readline).and_return('test').once
 
