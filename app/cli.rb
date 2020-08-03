@@ -1,4 +1,5 @@
 require_relative './file_interface.rb'
+require 'readline'
 
 class CLI
   attr_accessor :words
@@ -40,7 +41,14 @@ class CLI
   end
 
   def remove_word
-    # TODO
+    word = Readline.readline("Which word do you want to remove?\n", true)
+    if words.include?(word)
+      words.delete(word)
+      FileInterface.write_words(file_path, words)
+      puts "#{word} successfuly deleted\n\n"
+    else
+      puts "#{word} not found\n\n"
+    end
     landing
   end
 
@@ -52,8 +60,6 @@ class CLI
   private
 
   def prompt(text, accepted_answers)
-    require 'readline'
-
     answer = Readline.readline(text, true)
     until accepted_answers.include?(answer)
       answer = Readline.readline(text, true)

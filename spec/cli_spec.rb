@@ -68,4 +68,43 @@ RSpec.describe CLI do
       )
     end
   end
+
+  describe '#remove_word' do
+    let(:path) { "#{RSPEC_ROOT}/documents/dictionary_sample.txt" }
+    let(:cli) { CLI.new(path) }
+
+    context 'when passing a word in current list' do
+      it 'removes it from list, writes to file' do
+        expect(cli).to receive(:landing)
+        allow(Readline).to receive(:readline).and_return('dolor').once
+
+        begin
+          expect { cli.remove_word }.to(
+            output("dolor successfuly deleted\n\n").to_stdout
+          )
+          expect(cli.words).to eq(%w(lorem ipsum sit amet hôpital))
+          expect(File.read(path)).to eq('lorem ipsum sit amet hôpital')
+        ensure
+          File.write(path, 'lorem ipsum dolor sit amet hôpital')
+        end
+      end
+    end
+
+    context 'when passing a word not in current list' do
+      it 'does not update list, nor touch file' do
+        expect(cli).to receive(:landing)
+        allow(Readline).to receive(:readline).and_return('test').once
+
+        begin
+          expect { cli.remove_word }.to(
+            output("test not found\n\n").to_stdout
+          )
+          expect(cli.words).to eq(%w(lorem ipsum dolor sit amet hôpital))
+          expect(File.read(path)).to eq('lorem ipsum dolor sit amet hôpital')
+        ensure
+          File.write(path, 'lorem ipsum dolor sit amet hôpital')
+        end
+      end
+    end
+  end
 end
