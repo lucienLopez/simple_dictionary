@@ -180,6 +180,7 @@ RSpec.describe CLI do
           prompt_number += 1
           answer
         end
+
         expect(cli).to receive(:landing)
         expect(WordSearcher).to(receive(:search_method_1).with([], nil, 5, 'tes', ''))
           .and_return(%w(testing test))
@@ -188,6 +189,34 @@ RSpec.describe CLI do
         expect { cli.search_word }.to(
           output("Matching words: testing, test\n\n").to_stdout
         )
+      end
+    end
+
+    context 'when user selects search_method_2' do
+      context 'when passing valid query' do
+        let(:answers) { %w(2 _ing%) }
+
+        it 'calls WordSearcher.search_method_2 with the right params' do
+          prompt_number = 0
+          allow(Readline).to receive(:readline).at_most(2).time do
+            answer = answers[prompt_number]
+            prompt_number += 1
+            answer
+          end
+
+          expect(cli).to receive(:landing)
+          expect(WordSearcher).to(receive(:search_method_2).with([], '_ing%'))
+            .and_return(%w(testing test))
+
+
+          expect { cli.search_word }.to(
+            output("Matching words: testing, test\n\n").to_stdout
+          )
+        end
+      end
+
+      context 'when passing invalid query' do
+        it 'asks for another input'
       end
     end
   end

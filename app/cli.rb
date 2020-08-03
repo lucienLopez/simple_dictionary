@@ -75,7 +75,7 @@ class CLI
     when '1'
       search_method_1
     when '2'
-      add_word
+      search_method_2
     end
     landing
   end
@@ -113,7 +113,16 @@ class CLI
   end
 
   def search_method_2
-    # TODO
+    search = Readline.readline("Search string (with _ and % wildcards)\n", true)
+
+    until /^[a-zàâçéèêëîïôûùüÿñæœ_%]*$/.match?(search) do
+      search = Readline.readline(
+        "Please enter a word containing only French alphabet, % and _\n", true
+      )
+    end
+
+    matches = WordSearcher.search_method_2(words, search)
+    puts "Matching words: #{matches.join(', ')}\n\n"
   end
 
   def prompt(text, accepted_answers)

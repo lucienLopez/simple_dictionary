@@ -21,4 +21,14 @@ RSpec.describe WordSearcher do
       end
     end
   end
+
+  describe '.search_method_2' do
+    let(:words) { %w(tasting qwesiing sqing other sing tqing) }
+
+    it 'returns expected words' do
+      expect(WordSearcher.search_method_2(words, '%s_ing')).to(
+        contain_exactly('tasting', 'qwesiing', 'sqing')
+      )
+    end
+  end
 end

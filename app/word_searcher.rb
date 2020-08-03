@@ -16,4 +16,15 @@ class WordSearcher
 
     matches
   end
+
+  def self.search_method_2(words, search_string)
+    regex = Regexp.new("^#{search_string.gsub('%', '(.*)').gsub('_', '(.)')}$")
+    matches = []
+
+    words .each do |word|
+      matches << word if regex.match?(word)
+    end
+
+    matches
+  end
 end
