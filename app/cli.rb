@@ -36,7 +36,19 @@ class CLI
   end
 
   def add_word
-    # TODO
+    word = Readline.readline("Which word do you want to add?\n", true)
+
+    if /^[a-zàâçéèêëîïôûùüÿñæœ]*$/.match?(word)
+      if words.include?(word)
+        puts "#{word} was already in dictionary\n\n"
+      else
+        words << word
+        FileInterface.write_words(file_path, words)
+        puts "#{word} successfuly added\n\n"
+      end
+    else
+      puts "Could not add #{word} because it contains characters not in French alphabet\n\n"
+    end
     landing
   end
 

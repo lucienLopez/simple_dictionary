@@ -91,13 +91,73 @@ RSpec.describe CLI do
     end
 
     context 'when passing a word not in current dictionary' do
-      it 'does not update dictionary, nor touch file' do
+      it 'does not update dictionary, nor touches file' do
         expect(cli).to receive(:landing)
         allow(Readline).to receive(:readline).and_return('test').once
 
         begin
           expect { cli.remove_word }.to(
             output("test not found\n\n").to_stdout
+          )
+          expect(cli.words).to eq(%w(lorem ipsum dolor sit amet hôpital))
+          expect(File.read(path)).to eq('lorem ipsum dolor sit amet hôpital')
+        ensure
+          File.write(path, 'lorem ipsum dolor sit amet hôpital')
+        end
+      end
+    end
+  end
+
+  describe '#add_word' do
+    let(:path) { "#{RSPEC_ROOT}/documents/dictionary_sample.txt" }
+    let(:cli) { CLI.new(path) }
+
+    context 'when passing a word with only French characters' do
+      context 'when passing a word in current dictionary' do
+        it 'does not update dictionary, nor touches file' do
+          expect(cli).to receive(:landing)
+          allow(Readline).to receive(:readline).and_return('dolor').once
+
+          begin
+            expect { cli.add_word }.to(
+              output("dolor was already in dictionary\n\n").to_stdout
+            )
+            expect(cli.words).to eq(%w(lorem ipsum dolor sit amet hôpital))
+            expect(File.read(path)).to eq('lorem ipsum dolor sit amet hôpital')
+          ensure
+            File.write(path, 'lorem ipsum dolor sit amet hôpital')
+          end
+        end
+      end
+
+      context 'when passing a word not in current dictionary' do
+        it 'adds it to dictionary, writes to file' do
+          expect(cli).to receive(:landing)
+          allow(Readline).to receive(:readline).and_return('aiguë').once
+
+          begin
+            expect { cli.add_word }.to(
+              output("aiguë successfuly added\n\n").to_stdout
+            )
+            expect(cli.words).to eq(%w(lorem ipsum dolor sit amet hôpital aiguë))
+            expect(File.read(path)).to eq('lorem ipsum dolor sit amet hôpital aiguë')
+          ensure
+            File.write(path, 'lorem ipsum dolor sit amet hôpital')
+          end
+        end
+      end
+    end
+
+    context 'when passing a word containing non-French characters' do
+      it 'does not update dictionary, nor touches file' do
+        expect(cli).to receive(:landing)
+        allow(Readline).to receive(:readline).and_return('dørø').once
+
+        begin
+          expect { cli.add_word }.to(
+            output(
+              "Could not add dørø because it contains characters not in French alphabet\n\n"
+            ).to_stdout
           )
           expect(cli.words).to eq(%w(lorem ipsum dolor sit amet hôpital))
           expect(File.read(path)).to eq('lorem ipsum dolor sit amet hôpital')
