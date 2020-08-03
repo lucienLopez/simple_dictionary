@@ -167,4 +167,28 @@ RSpec.describe CLI do
       end
     end
   end
+
+  describe '#search_word' do
+    let(:cli) { CLI.new("#{RSPEC_ROOT}/documents/dictionary_empty.txt") }
+
+    context 'when user selects search_method_1' do
+      let(:answers) { ['1', '', '5', 'tes', ''] }
+      it 'calls WordSearcher.search_method_1 with the right params' do
+        prompt_number = 0
+        allow(Readline).to receive(:readline).at_most(5).time do
+          answer = answers[prompt_number]
+          prompt_number += 1
+          answer
+        end
+        expect(cli).to receive(:landing)
+        expect(WordSearcher).to(receive(:search_method_1).with([], nil, 5, 'tes', ''))
+          .and_return(%w(testing test))
+
+
+        expect { cli.search_word }.to(
+          output("Matching words: testing, test\n\n").to_stdout
+        )
+      end
+    end
+  end
 end

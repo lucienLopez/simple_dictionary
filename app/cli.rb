@@ -1,4 +1,5 @@
 require_relative './file_interface.rb'
+require_relative './word_searcher.rb'
 require 'readline'
 
 class CLI
@@ -65,11 +66,55 @@ class CLI
   end
 
   def search_word
-    # TODO
+    answer = prompt(
+      "1 - method 1\n2 - method 2\n",
+      %w(1 2)
+    )
+
+    case answer
+    when '1'
+      search_method_1
+    when '2'
+      add_word
+    end
     landing
   end
 
   private
+
+  def search_method_1
+    min_size = max_size = starting_with = ending_with = nil
+
+    loop do
+      answer = Readline.readline("Word minimum size (default none)\n", true)
+
+      if answer.to_i != 0
+        min_size = answer.to_i
+        continue = true
+      end
+      break if answer == '' || continue
+    end
+
+    loop do
+      answer = Readline.readline("Word maximum size (default none)\n", true)
+
+      if answer.to_i != 0
+        max_size = answer.to_i
+        continue = true
+      end
+      break if answer == '' || continue
+    end
+
+    starting_with = Readline.readline("Word starting with (default none)\n", true)
+    ending_with = Readline.readline("Word ending with (default none)\n", true)
+
+    matches = WordSearcher.search_method_1(words, min_size, max_size, starting_with, ending_with)
+    puts "Matching words: #{matches.join(', ')}\n\n"
+  end
+
+  def search_method_2
+    # TODO
+  end
 
   def prompt(text, accepted_answers)
     answer = Readline.readline(text, true)
